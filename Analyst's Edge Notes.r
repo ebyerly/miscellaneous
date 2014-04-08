@@ -178,8 +178,11 @@ predictCV = predict(treeCV, newdata = testing_data, type = "class")
 library(tm)
 library(SnowballC)
 
+# Load the dataset with stringsAsFactors to prevent R from automatically factoring strings
+text_dataset = read.csv(filepath, stringsAsFactors=FALSE)
+
 # Create corpus
-corpus = Corpus(VectorSource(dataset$textvector))
+corpus = Corpus(VectorSource(text_dataset$textvector))
 
 # Convert to lower-case
 corpus = tm_map(corpus, tolower)
@@ -190,229 +193,20 @@ corpus = tm_map(corpus, removeWords, c("apple", stopwords("english")))
 # Stem document 
 corpus = tm_map(corpus, stemDocument)
 
-
-# Video 6
-
 # Create matrix
-
 frequencies = DocumentTermMatrix(corpus)
 
-frequencies
-
-# Look at matrix 
-
-inspect(frequencies[1000:1005,505:515])
-
-# Check for sparsity
-
+# Check for sparsity; lowFreq specifies the number of times a word must appear in the matrix to be included
 findFreqTerms(frequencies, lowfreq=20)
 
-# Remove sparse terms
-
-sparse = removeSparseTerms(frequencies, 0.995)
-sparse
+# Remove sparse terms (for instance, 0.98 will remove all words which don't appear in at least 2% of texts/tweets/emails)
+sparse = removeSparseTerms(frequencies, 0.98)
 
 # Convert to a data frame
-
-tweetsSparse = as.data.frame(as.matrix(sparse))
+framedSparse = as.data.frame(as.matrix(sparse))
 
 # Make all variable names R-friendly
-
-colnames(tweetsSparse) = make.names(colnames(tweetsSparse))
-
-# Add dependent variable
-
-tweetsSparse$Negative = tweets$Negative
-
-# Split the data
-
-library(caTools)
-
-set.seed(123)
-
-split = sample.split(tweetsSparse$Negative, SplitRatio = 0.7)
-
-trainSparse = subset(tweetsSparse, split==TRUE)
-testSparse = subset(tweetsSparse, split==FALSE)
-
-
-
-# Video 7
-
-# Build a CART model
-
-library(rpart)
-library(rpart.plot)
-
-tweetCART = rpart(Negative ~ ., data=trainSparse, method="class")
-
-prp(tweetCART)
-
-# Evaluate the performance of the model
-predictCART = predict(tweetCART, newdata=testSparse, type="class")
-
-table(testSparse$Negative, predictCART)
-
-# Compute accuracy
-
-(294+18)/(294+6+37+18)
-
-# Baseline accuracy 
-
-table(testSparse$Negative)
-
-300/(300+55)
-
-
-# Random forest model
-
-library(randomForest)
-set.seed(123)
-
-tweetRF = randomForest(Negative ~ ., data=trainSparse)
-
-# Make predictions:
-predictRF = predict(tweetRF, newdata=testSparse)
-
-table(testSparse$Negative, predictRF)
-
-# Accuracy:
-(293+21)/(293+7+34+21)
-
-# Week 5 - Recitation
-
-
-# Video 2
-
-# Load the dataset
-
-emails = read.csv("energy_bids.csv", stringsAsFactors=FALSE)
-
-str(emails)
-
-# Look at emails
-
-emails$email[1]
-emails$responsive[1]
- 
-emails$email[2]
-emails$responsive[2]
-
-# Responsive emails
-
-table(emails$responsive)
-
-
-
-# Video 3
-
-
-# Load tm package
-
-library(tm)
-
-
-# Create corpus
-
-corpus = Corpus(VectorSource(emails$email))
-
-corpus[[1]]
-
-
-# Pre-process data
-corpus <- tm_map(corpus, tolower)
-
-corpus <- tm_map(corpus, removePunctuation)
-
-corpus <- tm_map(corpus, removeWords, stopwords("english"))
-
-corpus <- tm_map(corpus, stemDocument)
-
-# Look at first email
-corpus[[1]]
-
-
-
-# Video 4
-
-# Create matrix
-
-dtm = DocumentTermMatrix(corpus)
-dtm
-
-# Remove sparse terms
-dtm = removeSparseTerms(dtm, 0.97)
-dtm
-
-# Create data frame
-labeledTerms = as.data.frame(as.matrix(dtm))
+colnames(framedSparse) = make.names(colnames(framedSparse))
 
 # Add in the outcome variable
-labeledTerms$responsive = emails$responsive
-
-str(labeledTerms)
-
-
-
-# Video 5
-
-
-# Split the data
-
-library(caTools)
-
-set.seed(144)
-
-spl = sample.split(labeledTerms$responsive, 0.7)
-
-train = subset(labeledTerms, spl == TRUE)
-test = subset(labeledTerms, spl == FALSE)
-
-# Build a CART model
-
-library(rpart)
-library(rpart.plot)
-
-emailCART = rpart(responsive~., data=train, method="class")
-
-prp(emailCART)
-
-
-
-# Video 6
-
-# Make predictions on the test set
-
-pred = predict(emailCART, newdata=test)
-pred[1:10,]
-pred.prob = pred[,2]
-
-# Compute accuracy
-
-table(test$responsive, pred.prob >= 0.5)
-
-(195+25)/(195+25+17+20)
-
-# Baseline model accuracy
-
-table(test$responsive)
-215/(215+42)
-
-
-
-# Video 7
-
-# ROC curve
-
-library(ROCR)
-
-predROCR = prediction(pred.prob, test$responsive)
-
-perfROCR = performance(predROCR, "tpr", "fpr")
-
-plot(perfROCR, colorize=TRUE)
-
-# Compute AUC
-
-performance(predROCR, "auc")@y.values
-
+framedSparse$dependent = text_dataset$dependent
