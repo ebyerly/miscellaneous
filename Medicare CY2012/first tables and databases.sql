@@ -38,38 +38,39 @@ COPY medicare
 	FROM 'C:/Users/Elizabeth/Desktop/Medicare-Physician-and-Other-Supplier-PUF-CY2012.txt'
 	WITH DELIMITER E'\t' CSV HEADER;
 	
-DELETE FROM medicare WHERE '0000000001' IN (SELECT npi FROM medicare LIMIT 1;
+DELETE FROM medicare
+	WHERE '0000000001' IN (SELECT npi FROM medicare LIMIT 1);
 
 CREATE TABLE shorthand (
 	shorthand VARCHAR (35),
 	description VARCHAR (60)
-)
+);
 
-INSERT INTO shorthand ("shorthand,description) VALUES
-	("npi","National Provider Identifier"),
-	("nppes_provider_last_org_name","Last Name/Organization Name"),
-	("nppes_provider_first_name","First Name"),
-	("nppes_provider_mi","Middle Initial"),
-	("nppes_credentials","Credentials"),
-	("nppes_provider_gender","Gender"),
-	("nppes_entity_code","Entity Type"),
-	("nppes_provider_street1","Street Address 1"),
-	("nppes_provider_street2","Street Address 2"),
-	("nppes_provider_city","City"),
-	("nppes_provider_zip","Zip Code"),
-	("nppes_provider_state","State Code"),
-	("nppes_provider_country","Country Code"),
-	("provider_type","Provider Type"),
-	("medicare_participation_indicator","Medicare Participation"),
-	("place_of_service","Place of Service"),
-	("hcpcs_code","HCPCS Code"),
-	("hcpcs_description","HCPCS Description"),
-	("line_srvc_cnt","Number of Services"),
-	("bene_unique_cnt","Number of Medicare Beneficiaries"),
-	("bene_day_srvc_cnt","Number of Medicare Beneficiary/Day Services"),
-	("average_Medicare_allowed_amt","Average Medicare Allowed Amount"),
-	("stdev_Medicare_allowed_amt","Standard Deviation of Medicare Allowed Amount"),
-	("average_submitted_chrg_amt","Average Submitted Charge Amount"),
-	("stdev_submitted_chrg_amt","Standard Deviation of Submitted Charge Amount"), 
-	("average_Medicare_payment_amt","Average Medicare Payment Amount"),
-	("stdev_Medicare_payment_amt","Standard Deviation of Medicare Payment Amount");
+INSERT INTO shorthand (shorthand,description) VALUES
+	('npi','National Provider Identifier'),
+	('nppes_provider_last_org_name','Last Name/Organization Name'),
+	('nppes_provider_first_name','First Name'),
+	('nppes_provider_mi','Middle Initial'),
+	('nppes_credentials','Credentials'),
+	('nppes_provider_gender','Gender'),
+	('nppes_entity_code','Entity Type'),
+	('nppes_provider_street1','Street Address 1'),
+	('nppes_provider_street2','Street Address 2'),
+	('nppes_provider_city','City'),
+	('nppes_provider_zip','Zip Code'),
+	('nppes_provider_state','State Code'),
+	('nppes_provider_country','Country Code'),
+	('provider_type','Provider Type'),
+	('medicare_participation_indicator','Medicare Participation'),
+	('place_of_service','Place of Service'),
+	('hcpcs_code','HCPCS Code'),
+	('hcpcs_description','HCPCS Description'),
+	('line_srvc_cnt','Number of Services'),
+	('bene_unique_cnt','Number of Medicare Beneficiaries'),
+	('bene_day_srvc_cnt','Number of Medicare Beneficiary/Day Services'),
+	('average_Medicare_allowed_amt','Average Medicare Allowed Amount'),
+	('stdev_Medicare_allowed_amt','Standard Deviation of Medicare Allowed Amount'),
+	('average_submitted_chrg_amt','Average Submitted Charge Amount'),
+	('stdev_submitted_chrg_amt','Standard Deviation of Submitted Charge Amount'), 
+	('average_Medicare_payment_amt','Average Medicare Payment Amount'),
+	('stdev_Medicare_payment_amt','Standard Deviation of Medicare Payment Amount');
