@@ -6,7 +6,7 @@
 -- Table structure for table `codes`
 --
 
-CREATE TABLE IF NOT EXISTS codes  (
+CREATE TABLE IF NOT EXISTS hcpcs_codes  (
   id integer PRIMARY KEY,
   code_text varchar (255) NOT NULL default '',
   code_text_short varchar (24) NOT NULL default '',
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS codes  (
 );
 
 
-INSERT INTO codes  (id, code_text, code_text_short, code, code_type, modifier, units, fee, superbill, related_code, taxrates, cyp_factor, active, reportable, financial_reporting) VALUES
+INSERT INTO hcpcs_codes  (id, code_text, code_text_short, code, code_type, modifier, units, fee, superbill, related_code, taxrates, cyp_factor, active, reportable, financial_reporting) VALUES
 (147, 'Dressing for one wound', 'Dressing for one wound', 'A1', 3, '', 0, NULL, '', '', '', 0, 1, 1, 1),
 (148, 'Dressing for two wounds', 'Dressing for two wounds', 'A2', 3, '', 0, NULL, '', '', '', 0, 1, 1, 1),
 (149, 'Dressing for three wounds', 'Dressing for three wound', 'A3', 3, '', 0, NULL, '', '', '', 0, 1, 1, 1),
