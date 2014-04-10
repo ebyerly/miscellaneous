@@ -4,25 +4,25 @@ CREATE DATABASE medicare2012;
 
 /c medicare 2012
 
-CREATE TABLE medicare (
+CREATE TABLE medicare_original (
 	npi VARCHAR (10),
 	nppes_provider_last_org_name VARCHAR (70),
-	nppes_provider_first_name VARCHAR (70),
-	nppes_provider_mi VARCHAR (70),
-	nppes_credentials VARCHAR (70),
-	nppes_provider_gender VARCHAR (70),
-	nppes_entity_code VARCHAR (70),
-	nppes_provider_street1 VARCHAR (70),
-	nppes_provider_street2 VARCHAR (70),
-	nppes_provider_city VARCHAR (70),
-	nppes_provider_zip VARCHAR (70),
-	nppes_provider_state VARCHAR (70),
-	nppes_provider_country VARCHAR (70),
-	provider_type VARCHAR (70),
-	medicare_participation_indicator VARCHAR (70),
-	place_of_service VARCHAR (70),
-	hcpcs_code VARCHAR (70),
-	hcpcs_description VARCHAR (70),
+	nppes_provider_first_name VARCHAR (20),
+	nppes_provider_mi VARCHAR (1),
+	nppes_credentials VARCHAR (20),
+	nppes_provider_gender VARCHAR (1),
+	nppes_entity_code VARCHAR (1),
+	nppes_provider_street1 VARCHAR (55),
+	nppes_provider_street2 VARCHAR (55),
+	nppes_provider_city VARCHAR (40),
+	nppes_provider_zip VARCHAR (20),
+	nppes_provider_state VARCHAR (2),
+	nppes_provider_country VARCHAR (2),
+	provider_type VARCHAR (43),
+	medicare_participation_indicator VARCHAR (1),
+	place_of_service VARCHAR (1),
+	hcpcs_code VARCHAR (5),
+	hcpcs_description VARCHAR (30),
 	line_srvc_cnt DECIMAL,
 	bene_unique_cnt DECIMAL,
 	bene_day_srvc_cnt DECIMAL,
@@ -34,12 +34,15 @@ CREATE TABLE medicare (
 	stdev_Medicare_payment_amt DECIMAL
 );
 
-COPY medicare
+
+-- Original data groups by NPI for the performing provider, the HCPCS code, and the place of service (F/O). There can be multiple records for a given NPI based on distinct HCPCS and where the services were provided.
+
+COPY medicare_original
 	FROM 'C:/Users/Elizabeth/Desktop/Medicare-Physician-and-Other-Supplier-PUF-CY2012.txt'
 	WITH DELIMITER E'\t' CSV HEADER;
 	
-DELETE FROM medicare
-	WHERE '0000000001' IN (SELECT npi FROM medicare LIMIT 1);
+DELETE FROM medicare_original
+	WHERE npi = '0000000001';
 
 CREATE TABLE shorthand (
 	shorthand VARCHAR (35),
